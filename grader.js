@@ -47,16 +47,16 @@ var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
 
-var getURL = function(url, whatToDo) {
+var getURL = function(url, handleHTML) {
     rest.get(url).on('complete', function(result) {
 	if (result instanceof Error) throw result;
-	whatToDo(result);
+	handleHTML(result);
     });
 }
 
 var checkHtmlURL = function (url, checksfile) {
-    function whatToDo (data) {
-	$ = cheerio.load(data);
+    function handleHTML (html) {
+	$ = cheerio.load(html);
 	var checks = loadChecks(checksfile).sort();
 	var out = {};
 	for(var ii in checks) {
@@ -66,7 +66,7 @@ var checkHtmlURL = function (url, checksfile) {
 	var outJson = JSON.stringify(out, null, 4);
 	console.log(outJson);
     }
-    getURL(url, whatToDo)
+    getURL(url, handleHTML)
 }
 
 var checkHtmlFile = function(htmlfile, checksfile) {
